@@ -1,0 +1,48 @@
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Upload Release Assets
+
+env:
+  NJS_VERSION: "0.7.6"
+  NGX_BROTLI_COMMIT: "6e975bc"
+  OPENSSL_VERSION: "openssl-3.0.5+quic"
+  HEADERS_MORE_NGINX_MODULE_VERSION: "v0.34"
+  NGINX_MODULE_VTS_COMMIT: "6dadfc8"
+  NGX_CACHE_PURGE_VERSION: "2.3"
+  NGINX_VERSION: "release-1.23.1"
+
+jobs:
+  build:
+    name: Upload Release Assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - uses: actions/checkout@v2
+      - name: Create archives
+        run: |
+          sudo -E ./build.sh
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          release_name: ${{ steps.get_version.outputs.VERSION }}
+          draft: true
+          prerelease: false
+      - name: Upload release asset gzip
+        id: upload-release-asset-gzip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /tmp/nginx-http3.gz
+          asset_name: nginx-http3.gz
+          asset_content_type: application/gzip
