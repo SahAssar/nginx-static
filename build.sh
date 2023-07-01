@@ -32,6 +32,7 @@ cd nginx
   --with-http_gzip_static_module \
   --with-http_auth_request_module \
   --with-http_v3_module \
+  --with-http_dav_module \
   --without-http_ssi_module \
   --without-http_userid_module \
   --without-http_auth_basic_module \
