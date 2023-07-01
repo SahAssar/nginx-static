@@ -6,13 +6,10 @@ on:
 name: Upload Release Assets
 
 env:
-  NJS_VERSION: "0.7.6"
+  NGX_VERSION: "1.25.1"
   NGX_BROTLI_COMMIT: "6e975bc"
-  OPENSSL_VERSION: "openssl-3.0.5+quic"
+  OPENSSL_VERSION: "openssl-3.0.9+quic"
   HEADERS_MORE_NGINX_MODULE_VERSION: "v0.34"
-  NGINX_MODULE_VTS_COMMIT: "6dadfc8"
-  NGX_CACHE_PURGE_VERSION: "2.3"
-  NGINX_VERSION: "release-1.23.1"
 
 jobs:
   build:

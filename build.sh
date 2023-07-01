@@ -9,16 +9,11 @@ set -euo pipefail
 currdir="$(pwd)"
 builddir="$(mktemp -d)"
 cd "${builddir}"
-git clone https://github.com/nginx/njs.git --branch="$NJS_VERSION" --recurse-submodules
 git clone https://github.com/google/ngx_brotli.git --recurse-submodules && (cd ngx_brotli && git reset --hard "$NGX_BROTLI_COMMIT" && git submodule foreach --recursive git reset --hard)
 git clone https://github.com/quictls/openssl.git --branch="$OPENSSL_VERSION" --recurse-submodules
 git clone https://github.com/openresty/headers-more-nginx-module.git --branch="$HEADERS_MORE_NGINX_MODULE_VERSION" --recurse-submodules
-git clone https://github.com/vozlt/nginx-module-vts.git --recurse-submodules && (cd nginx-module-vts && git reset --hard "$NGINX_MODULE_VTS_COMMIT" && git submodule foreach --recursive git reset --hard)
-git clone https://github.com/FRiCKLE/ngx_cache_purge.git --branch="$NGX_CACHE_PURGE_VERSION" --recurse-submodules
-hg clone -b quic https://hg.nginx.org/nginx-quic
-cd nginx-quic
-# TODO: Fix mercurial clone version, right now it seems like all the tags on the nginx-quic repo point to non-quic versions
-# hg update -r "$NGINX_VERSION"
+git clone --depth 1 https://github.com/nginx/nginx --branch="release-$NGX_VERSION"
+cd nginx
 # -Wno-vla-parameter is needed on arch linux, see https://github.com/google/ngx_brotli/issues/121
 # -Wno-stringop-overread is needed for nginx-module-vts, see https://github.com/vozlt/nginx-module-vts/issues/223
 ./auto/configure \
@@ -62,11 +57,8 @@ cd nginx-quic
   --without-stream_upstream_least_conn_module \
   --without-stream_upstream_random_module \
   --without-stream_upstream_zone_module \
-  --add-module=../njs/nginx \
   --add-module=../ngx_brotli \
   --add-module=../headers-more-nginx-module \
-  --add-module=../nginx-module-vts \
-  --add-module=../ngx_cache_purge \
   --with-openssl=../openssl \
   --with-pcre-jit
 make -j1
