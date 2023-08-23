@@ -9,9 +9,9 @@ set -euo pipefail
 currdir="$(pwd)"
 builddir="$(mktemp -d)"
 cd "${builddir}"
-git clone https://github.com/google/ngx_brotli.git --recurse-submodules && (cd ngx_brotli && git reset --hard "$NGX_BROTLI_COMMIT" && git submodule foreach --recursive git reset --hard)
-git clone https://github.com/quictls/openssl.git --branch="$OPENSSL_VERSION" --recurse-submodules
-git clone https://github.com/openresty/headers-more-nginx-module.git --branch="$HEADERS_MORE_NGINX_MODULE_VERSION" --recurse-submodules
+git clone https://github.com/google/ngx_brotli --recurse-submodules && (cd ngx_brotli && git reset --hard "$NGX_BROTLI_COMMIT" && git submodule foreach --recursive git reset --hard)
+git clone https://github.com/quictls/openssl --branch="$OPENSSL_VERSION" --recurse-submodules
+git clone https://github.com/openresty/headers-more-nginx-module --branch="$HEADERS_MORE_NGINX_MODULE_VERSION" --recurse-submodules
 git clone --depth 1 https://github.com/nginx/nginx --branch="release-$NGX_VERSION"
 cd nginx
 # -Wno-vla-parameter is needed on arch linux, see https://github.com/google/ngx_brotli/issues/121
